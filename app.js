@@ -4,7 +4,16 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-// add new modules and files here
+const session = require('express-session');
+const passport = require('passport');
+
+const index = require('./routes/index');
+const authRoutes = require('./routes/auth.js');
+const userRouters = require('./routes/user.js');
+const app = express();
+
+// dotenv loads environment variables into process env (user environment object)
+require('donenv').config();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -16,11 +25,19 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// add new express-session and passport middleware here
-
+// express session and passport middlewares
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(passport.intialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// add route middleware here
+app.use('/', index);
+app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
 
 
 // catch 404 and forward to error handler

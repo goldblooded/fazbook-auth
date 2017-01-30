@@ -6,6 +6,7 @@ module.exports = () => {
     done(null, user.id);
   });
 
+
   passport.deserializeUser((id, done) => {
     models.User.findById(id)
     .then((user) => { done(null, user); })
