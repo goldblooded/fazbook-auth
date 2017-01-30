@@ -32,3 +32,16 @@ function createUser(req, res) {
     res.redicrect('/');
   });
 }
+
+function loginRequired(req, res, next) {
+  if (!req.user) return res.status(401).json({ status: 'Please log in' });
+
+  return next();
+}
+
+module.exports = {
+  comparePass,
+  loginRedirect,
+  loginRequired,
+  createUser
+}
